@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.modbus.internal.pooling;
 
@@ -15,6 +19,8 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**
  * Class representing pooling related configuration of a single endpoint
+ *
+ * This class implements equals hashcode constract, and thus is suitable for use as keys in HashMaps, for example.
  *
  */
 public class EndpointPoolConfiguration {
@@ -42,6 +48,12 @@ public class EndpointPoolConfiguration {
      * One can use 0ms to denote reconnection after every transaction (default).
      */
     private int reconnectAfterMillis;
+
+    /**
+     * How long before we give up establishing the connection. In milliseconds. Default of 0 means that system/OS
+     * default is respected.
+     */
+    private int connectTimeoutMillis;
 
     private static StandardToStringStyle toStringStyle = new StandardToStringStyle();
 
@@ -81,17 +93,26 @@ public class EndpointPoolConfiguration {
         this.passivateBorrowMinMillis = passivateBorrowMinMillis;
     }
 
+    public int getConnectTimeoutMillis() {
+        return connectTimeoutMillis;
+    }
+
+    public void setConnectTimeoutMillis(int connectTimeoutMillis) {
+        this.connectTimeoutMillis = connectTimeoutMillis;
+    }
+
     @Override
     public int hashCode() {
         return new HashCodeBuilder(2149, 3117).append(passivateBorrowMinMillis).append(interConnectDelayMillis)
-                .append(connectMaxTries).append(reconnectAfterMillis).toHashCode();
+                .append(connectMaxTries).append(reconnectAfterMillis).append(connectTimeoutMillis).toHashCode();
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this, toStringStyle).append("passivateBorrowMinMillis", passivateBorrowMinMillis)
                 .append("interConnectDelayMillis", interConnectDelayMillis).append("connectMaxTries", connectMaxTries)
-                .append("reconnectAfterMillis", reconnectAfterMillis).toString();
+                .append("reconnectAfterMillis", reconnectAfterMillis)
+                .append("connectTimeoutMillis", connectTimeoutMillis).toString();
     }
 
     @Override
@@ -109,7 +130,7 @@ public class EndpointPoolConfiguration {
         return new EqualsBuilder().append(passivateBorrowMinMillis, rhs.passivateBorrowMinMillis)
                 .append(interConnectDelayMillis, rhs.interConnectDelayMillis)
                 .append(connectMaxTries, rhs.connectMaxTries).append(reconnectAfterMillis, rhs.reconnectAfterMillis)
-                .isEquals();
+                .append(connectTimeoutMillis, rhs.connectTimeoutMillis).isEquals();
     }
 
 }

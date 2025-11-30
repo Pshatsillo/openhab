@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.action.satel.internal;
 
@@ -153,6 +157,24 @@ public class Satel {
         } catch (UnsupportedEncodingException e) {
             logger.error("Unsupported encoding: {}", SatelActionService.satelCommModule.getTextEncoding());
             return null;
+        }
+    }
+
+    @ActionDoc(text = "Overrides configured user code. It will be used for all operations that require authorization.")
+    public static void satelSetUserCode(@ParamDoc(name = "userCode", text = "user code to set") String userCode) {
+        if (SatelActionService.satelCommModule == null) {
+            logger.debug("Satel communication module not available - execution aborted!");
+        } else {
+            SatelActionService.satelCommModule.setUserCode(userCode);
+        }
+    }
+
+    @ActionDoc(text = "Reverts user code to the one configured in settings.")
+    public static void satelResetUserCode() {
+        if (SatelActionService.satelCommModule == null) {
+            logger.debug("Satel communication module not available - execution aborted!");
+        } else {
+            SatelActionService.satelCommModule.resetUserCode();
         }
     }
 
